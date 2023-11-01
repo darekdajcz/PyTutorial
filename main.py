@@ -2,6 +2,7 @@ from dotenv import load_dotenv, find_dotenv
 import os
 import pprint
 from pymongo import MongoClient
+
 load_dotenv(find_dotenv())
 
 password = os.environ.get("MONGODB_PWD")
@@ -9,6 +10,23 @@ password = os.environ.get("MONGODB_PWD")
 connection_string = f"mongodb+srv://daarekdajcz:{password}@pythonclaster.9nprnvx.mongodb.net/?retryWrites=true&w=majority"
 
 client = MongoClient(connection_string)
+
+dbs = client.list_database_names()
+test_db = client.test
+collections = test_db.list_collection_names()
+
+
+def insert_test_doc():
+    collection = test_db.test
+    test_document = {
+        "name": "Darek",
+        "type": "Test"
+    }
+    inserted_id = collection.insert_one(test_document).inserted_id
+    print(inserted_id)
+
+
+insert_test_doc()
 
 # from typing import List
 # from uuid import UUID
