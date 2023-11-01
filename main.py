@@ -46,7 +46,45 @@ def create_document():
     person_collection.insert_many(docs)
 
 
-create_document()
+# create_document()
+
+printer = pprint.PrettyPrinter()
+
+
+def find_all_people():
+    people = person_collection.find()
+    for person in people:
+        printer.pprint(person)
+
+
+# find_all_people()
+
+def find_person():
+    darek = person_collection.find_one({"first_name": "Darek", "last_name": "Dajcz"})
+    printer.pprint(darek)
+
+
+# find_person()
+
+
+def count_all_people():
+    count = person_collection.count_documents(filter={})
+    # count = person_collection.find()count()
+    printer.pprint(count)
+
+
+# count_all_people()
+
+def get_person_by_id(person_id):
+    from bson.objectid import ObjectId
+
+    _id = ObjectId(person_id)
+    person = person_collection.find_one({"_id": _id})
+    printer.pprint(person)
+
+
+get_person_by_id("65425873c4544feae7e1820f")
+
 # from typing import List
 # from uuid import UUID
 # from fastapi import FastAPI,HTTPException
