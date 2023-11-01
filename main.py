@@ -26,8 +26,27 @@ def insert_test_doc():
     print(inserted_id)
 
 
-insert_test_doc()
+# insert_test_doc()
 
+production = client.production
+person_collection = production.person_collection
+
+
+def create_document():
+    first_names = ["Darek", "Natalia", "Uzi", "Szymon", "Krzysztof"]
+    last_names = ["Dajcz", "Miano", "Kostka", "Kołecki", "Krawczyk"]
+    ages = [28, 25, 3, 42, 65]
+
+    docs = []
+
+    for first_name, last_name, age in zip(first_names, last_names, ages):
+        doc = {"first_name": first_name, "last_name": last_name, "age": age}
+        docs.append(doc)
+        # person_collection.insert_one(doc)
+    person_collection.insert_many(docs)
+
+
+create_document()
 # from typing import List
 # from uuid import UUID
 # from fastapi import FastAPI,HTTPException
