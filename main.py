@@ -124,7 +124,8 @@ def update_person_by_id(person_id):
     person_collection.update_one({"_id": _id}, {"$unset": {"extra_field": ""}})
 
 
-update_person_by_id("65425873c4544feae7e1820e")
+# update_person_by_id("65425873c4544feae7e1820e")
+
 
 def replace_person(person_id):
     from bson.objectid import ObjectId
@@ -138,22 +139,52 @@ def replace_person(person_id):
     person_collection.replace_one({"_id": _id}, doc_replace)
 
 
-replace_person("65425873c4544feae7e18212")
+# replace_person("65425873c4544feae7e18212")
 
 
-# def delete_doc_by_id(person_id):
-#     from bson.objectid import ObjectId
-#     _id = ObjectId(person_id)
-#
-#     person_collection.delete_one({"_id": _id})
-#     # person_collection.delete_many({"_id": _id})
-#
-#
+def delete_doc_by_id(person_id):
+    from bson.objectid import ObjectId
+    _id = ObjectId(person_id)
+
+    person_collection.delete_one({"_id": _id})
+    # person_collection.delete_many({"_id": _id})
+
+
 # delete_doc_by_id("65425873c4544feae7e18212")
 
+address = {
+    "_id": "65425873c4544feae7e1821f",
+    "street": "Hassa",
+    "number": "42",
+    "city": "Warsaw",
+    "country": "Poland",
+    "zip": "97-301",
+}
 
 
+def add_address_embed(person_id, address):
+    from bson.objectid import ObjectId
+    _id = ObjectId(person_id)
 
+    person_collection.update_one(
+        {"_id": _id},
+        {"$addToSet": {"addresses": address}}
+    )
+
+
+def add_address_relationship(person_id, address):
+    from bson.objectid import ObjectId
+    _id = ObjectId(person_id)
+
+    address = address.copy()
+    address["owner_id"] = person_id
+
+    address_collection = production.address
+
+    address_collection.insert_one(address)
+
+
+add_address_relationship("65425873c4544feae7e1820f", address)
 
 # from typing import List
 # from uuid import UUID
