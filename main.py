@@ -80,10 +80,26 @@ def get_person_by_id(person_id):
 
     _id = ObjectId(person_id)
     person = person_collection.find_one({"_id": _id})
+    printer.pprint("person")
     printer.pprint(person)
 
 
-get_person_by_id("65425873c4544feae7e1820f")
+# get_person_by_id("65425873c4544feae7e1820f")
+
+
+def get_age_range(min_age, max_age):
+    query = {
+        "$and": [
+            {"age": {"$gte": min_age}},
+            {"age": {"$lte": max_age}},
+        ]
+    }
+    people = person_collection.find(query).sort("age")
+    for person in people:
+        printer.pprint(person)
+
+
+get_age_range(20, 40)
 
 # from typing import List
 # from uuid import UUID
