@@ -99,7 +99,32 @@ def get_age_range(min_age, max_age):
         printer.pprint(person)
 
 
-get_age_range(20, 40)
+# get_age_range(20, 40)
+
+def project_columns():
+    columns = {"_id": 0, "first_name": 1, "last_name": 1}
+    people = person_collection.find({}, columns)
+    for person in people:
+        printer.pprint(person)
+
+
+# project_columns()
+
+
+def update_person_by_id(person_id):
+    from bson.objectid import ObjectId
+    _id = ObjectId(person_id)
+
+    # req_update = {
+    #     "$set": {"is_developer": True, "extra_field": True},
+    #     "$inc": {"age": -1},
+    #     "$rename": {"Dajcz (renamed)": "surname"}
+    # }
+    # person_collection.update_one({"_id": _id}, req_update)
+    person_collection.update_one({"_id": _id}, {"$unset": {"extra_field": ""}})
+
+
+update_person_by_id("65425873c4544feae7e1820e")
 
 # from typing import List
 # from uuid import UUID
