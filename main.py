@@ -126,6 +126,35 @@ def update_person_by_id(person_id):
 
 update_person_by_id("65425873c4544feae7e1820e")
 
+def replace_person(person_id):
+    from bson.objectid import ObjectId
+    _id = ObjectId(person_id)
+
+    doc_replace = {
+        "first_name": "New Krzysztof",
+        "last_name": "New Krawczyk",
+        "age": 99
+    }
+    person_collection.replace_one({"_id": _id}, doc_replace)
+
+
+replace_person("65425873c4544feae7e18212")
+
+
+# def delete_doc_by_id(person_id):
+#     from bson.objectid import ObjectId
+#     _id = ObjectId(person_id)
+#
+#     person_collection.delete_one({"_id": _id})
+#     # person_collection.delete_many({"_id": _id})
+#
+#
+# delete_doc_by_id("65425873c4544feae7e18212")
+
+
+
+
+
 # from typing import List
 # from uuid import UUID
 # from fastapi import FastAPI,HTTPException
