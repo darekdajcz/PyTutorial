@@ -247,3 +247,28 @@ def create_data():
 # ])
 #
 # pprint.pprint(list(authors_book_filter_age))
+
+import pyarrow
+from pymongoarrow.api import Schema
+from pymongoarrow.monkey import patch_all
+import pymongoarrow as pma
+from bson import ObjectId
+from datetime import datetime as dt
+
+patch_all()
+
+author = Schema({
+    "_id": ObjectId,
+    "first_name": pyarrow.string(),
+    "last_name": pyarrow.string(),
+    "date_of_birth": dt
+})
+
+df = production.author.find_pandas_all({}, schema=author)
+# print(df.head())
+
+# arrow_table = production.author.find_arrow_all({}, schema=author)
+# print(arrow_table)
+
+ndarrays = production.author.find_numpy_all({}, schema=author)
+print(ndarrays)
