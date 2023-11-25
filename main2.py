@@ -14,6 +14,8 @@ client = MongoClient(connection_string)
 dbs = client.list_database_names()
 production = client.production
 
+printer = pprint.PrettyPrinter()
+
 
 def create_book_collection():
     book_validator = {
@@ -37,7 +39,7 @@ def create_book_collection():
                     "description": "must  be a date and required"
                 },
                 "type": {
-                    "enum": ["Ficition", "Non-Fiction"],
+                    "enum": ["Fiction", "Non-Fiction"],
                     "description": "can only be one of the enum values and is required"
                 },
                 "copies": {
@@ -87,5 +89,94 @@ def create_author_validator():
     production.command("collMod", "author", validator=author_validator)
 
 
-create_book_collection()
-create_author_validator()
+# create_book_collection()
+# create_author_validator()
+
+def create_data():
+    from datetime import datetime as dt
+    authors = [
+        {
+            "first_name": "Darek",
+            "last_name": "Dajcz",
+            "date_of_birth": dt(2000, 7, 20),
+        },
+        {
+            "first_name": "Natalia",
+            "last_name": "Mianowska",
+            "date_of_birth": dt(2001, 7, 20),
+        },
+        {
+            "first_name": "Szymon",
+            "last_name": "Kadziak",
+            "date_of_birth": dt(2002, 7, 20),
+        },
+        {
+            "first_name": "Robert",
+            "last_name": "Kubica",
+            "date_of_birth": dt(1980, 2, 11),
+        }
+    ]
+
+    author_collection = production.author
+    authors_id = author_collection.insert_many(authors).inserted_ids
+
+    books = [
+        {
+            "title": "MongoDb Advanced Tutortial",
+            "authors": [authors_id[0]],
+            "publish_date": dt.today(),
+            "type": "Non-Fiction",
+            "copies": 5,
+        },
+        {
+            "title": "Python for Dummies",
+            "authors": [authors_id[0]],
+            "publish_date": dt(2022, 7, 12),
+            "type": "Fiction",
+            "copies": 4,
+        },
+        {
+            "title": "Angular Tutor to Dev",
+            "authors": [authors_id[1]],
+            "publish_date": dt(2021, 7, 12),
+            "type": "Non-Fiction",
+            "copies": 111,
+        },
+        {
+            "title": "XXX Advanced Tutortial",
+            "authors": [authors_id[2]],
+            "publish_date": dt.today(),
+            "type": "Fiction",
+            "copies": 15,
+        },
+        {
+            "title": "YYY Formula Tutortial",
+            "authors": [authors_id[3]],
+            "publish_date": dt(2011, 7, 12),
+            "type": "Non-Fiction",
+            "copies": 9,
+        }
+    ]
+
+    book_collection = production.book
+    book_collection.insert_many(books)
+
+
+# create_data()
+#
+# books_containing_a = (
+#     production.book
+#     .find({"title": {"$regex": "a{1}"}})
+# )
+# printer.pprint(list(books_containing_a))
+
+authors_and_books = production.author.aggregate([{
+    "$lookup": {
+        "from": "book",
+        "localField": "_id",
+        "foreignField": "authors",
+        "as": "books"
+    }
+}])
+
+pprint.pprint(list(authors_and_books))
