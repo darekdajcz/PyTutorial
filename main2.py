@@ -181,23 +181,69 @@ def create_data():
 #
 # pprint.pprint(list(authors_and_books))
 
-authors_book_count = production.author.aggregate([
-    {
-        "$lookup": {
-            "from": "book",
-            "localField": "_id",
-            "foreignField": "authors",
-            "as": "books"
-        }
-    },
-    {
-        "$addFields": {
-            "total_books": {"$size": "$books"}
-        }
-    },
-    {
-        "$project": {"first_name": 1, "last_name": 1, "total_books": 1, "_id": 0}
-    }
-])
+# authors_book_count = production.author.aggregate([
+#     {
+#         "$lookup": {
+#             "from": "book",
+#             "localField": "_id",
+#             "foreignField": "authors",
+#             "as": "books"
+#         }
+#     },
+#     {
+#         "$addFields": {
+#             "total_books": {"$size": "$books"}
+#         }
+#     },
+#     {
+#         "$project": {"first_name": 1, "last_name": 1, "total_books": 1, "_id": 0}
+#     }
+# ])
+#
+# pprint.pprint(list(authors_book_count))
 
-pprint.pprint(list(authors_book_count))
+# authors_book_filter_age = production.book.aggregate([
+#     {
+#         "$lookup": {
+#             "from": "author",
+#             "localField": "authors",
+#             "foreignField": "_id",
+#             "as": "authors"
+#         }
+#     },
+#     {
+#         "$set": {
+#             "authors": {
+#                 "$map": {
+#                     "input": "$authors",
+#                     "in": {
+#                         "age": {
+#                             "$dateDiff": {
+#                                 "startDate": "$$this.date_of_birth",
+#                                 "endDate": "$$NOW",
+#                                 "unit": "year"
+#                             }
+#                         },
+#                         "first_name": "$$this.fname",
+#                         "last_name": "$$this.lname",
+#                     }
+#                 }
+#             }
+#         }
+#     },
+#     {
+#         "$match": {
+#             "$and": [
+#                 {"authors.age": {"$gte": 24}},
+#                 {"authors.age": {"$lte": 123}}
+#             ]
+#         }
+#     },
+#     {
+#         "$sort": {
+#             "age": 1
+#         }
+#     }
+# ])
+#
+# pprint.pprint(list(authors_book_filter_age))
