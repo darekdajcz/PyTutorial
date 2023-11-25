@@ -170,13 +170,34 @@ def create_data():
 # )
 # printer.pprint(list(books_containing_a))
 
-authors_and_books = production.author.aggregate([{
-    "$lookup": {
-        "from": "book",
-        "localField": "_id",
-        "foreignField": "authors",
-        "as": "books"
-    }
-}])
+# authors_and_books = production.author.aggregate([{
+#     "$lookup": {
+#         "from": "book",
+#         "localField": "_id",
+#         "foreignField": "authors",
+#         "as": "books"
+#     }
+# }])
+#
+# pprint.pprint(list(authors_and_books))
 
-pprint.pprint(list(authors_and_books))
+authors_book_count = production.author.aggregate([
+    {
+        "$lookup": {
+            "from": "book",
+            "localField": "_id",
+            "foreignField": "authors",
+            "as": "books"
+        }
+    },
+    {
+        "$addFields": {
+            "total_books": {"$size": "$books"}
+        }
+    },
+    {
+        "$project": {"first_name": 1, "last_name": 1, "total_books": 1, "_id": 0}
+    }
+])
+
+pprint.pprint(list(authors_book_count))
