@@ -21,8 +21,7 @@ printer = pprint.PrettyPrinter()
 indexes = computer_collection.index_information()
 printer.pprint(indexes)
 
-computer_collection.create_index([(" Value", "text")])
-computer_collection.drop_index(' Category_text')
+# computer_collection.create_index([(" Category", "text")])
 
 # def find_in_collection():
 #     from bson.objectid import ObjectId
@@ -32,4 +31,15 @@ computer_collection.drop_index(' Category_text')
 #
 #
 # find_in_collection()
+
+def find_in_by_index_collection():
+    computer_collection.drop_index(' Value_text')
+    computer_collection.create_index([(" Category", "text")])
+
+    results = computer_collection.find({"$text": {"$search": "HISTORY"}})
+
+    printer.pprint(list(results))
+
+
+find_in_by_index_collection()
 
