@@ -42,17 +42,32 @@ printer.pprint(indexes)
 #
 #
 # find_in_by_index_collection()
+#
+# def find_in_by_index_collection_with_text_score():
+#     results = (computer_collection
+#                .find(
+#         {"$text": {"$search": "HISTORY"}},
+#         {"score": {"$meta": "textScore"}})
+#                .sort([("score",
+#                        {"$meta": "textScore"}
+#                        )]))
+#
+#     printer.pprint(list(results))
+#
+#
+# find_in_by_index_collection_with_text_score()
 
-def find_in_by_index_collection_with_text_score():
-    results = (computer_collection
-               .find(
-        {"$text": {"$search": "HISTORY"}},
-        {"score": {"$meta": "textScore"}})
-               .sort([("score",
-                       {"$meta": "textScore"}
-                       )]))
+def find_in_by_index_collection_with_fuzzy():
+    query = {
+        "$text": {
+            "$search": "History",
+            "$caseSensitive": False,
+            "$diacriticSensitive": False
+        }
+    }
 
+    results = computer_collection.find(query)
     printer.pprint(list(results))
 
 
-find_in_by_index_collection_with_text_score()
+find_in_by_index_collection_with_fuzzy()
