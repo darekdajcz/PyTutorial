@@ -58,16 +58,21 @@ printer.pprint(indexes)
 # find_in_by_index_collection_with_text_score()
 
 def find_in_by_index_collection_with_fuzzy():
-    query = {
-        "$text": {
-            "$search": "History",
-            "$caseSensitive": False,
-            "$diacriticSensitive": False
+    result = computer_collection.aggregate([
+        {
+            "$search": {
+                "index": "category",
+                "text": {
+                    "query": "Hisory",
+                    "path": " Category",
+                    "fuzzy": {
+                    }
+                }
+            }
         }
-    }
+    ])
 
-    results = computer_collection.find(query)
-    printer.pprint(list(results))
+    printer.pprint(list(result))
 
 
 find_in_by_index_collection_with_fuzzy()
