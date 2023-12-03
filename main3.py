@@ -3,7 +3,6 @@ import os
 import pprint
 from pymongo import MongoClient
 
-
 load_dotenv(find_dotenv())
 
 password = os.environ.get("MONGODB_PWD")
@@ -21,6 +20,7 @@ printer = pprint.PrettyPrinter()
 indexes = computer_collection.index_information()
 printer.pprint(indexes)
 
+
 # computer_collection.create_index([(" Category", "text")])
 
 # def find_in_collection():
@@ -32,14 +32,27 @@ printer.pprint(indexes)
 #
 # find_in_collection()
 
-def find_in_by_index_collection():
-    computer_collection.drop_index(' Value_text')
-    computer_collection.create_index([(" Category", "text")])
+# def find_in_by_index_collection():
+#     computer_collection.drop_index(' Value_text')
+#     computer_collection.create_index([(" Category", "text")])
+#
+#     results = computer_collection.find({"$text": {"$search": "HISTORY"}})
+#
+#     printer.pprint(list(results))
+#
+#
+# find_in_by_index_collection()
 
-    results = computer_collection.find({"$text": {"$search": "HISTORY"}})
+def find_in_by_index_collection_with_text_score():
+    results = (computer_collection
+               .find(
+        {"$text": {"$search": "HISTORY"}},
+        {"score": {"$meta": "textScore"}})
+               .sort([("score",
+                       {"$meta": "textScore"}
+                       )]))
 
     printer.pprint(list(results))
 
 
-find_in_by_index_collection()
-
+find_in_by_index_collection_with_text_score()
